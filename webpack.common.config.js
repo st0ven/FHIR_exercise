@@ -1,20 +1,12 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { VueLoaderPlugin } = require('vue-loader');
-const env = process.env.NODE_ENV;
-const portNumber = 4000;
 
 
 module.exports = {
-  devServer: {
-    publicPath: '/',
-    port: portNumber,
-    hot: true
-  },
   entry: {
     app: path.join(__dirname, 'src/app.js')
   },
-  mode: env,
   module: {
     rules: [
       {
@@ -40,9 +32,8 @@ module.exports = {
     ]
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
-    publicPath: '/'
+    path: path.resolve(__dirname, 'dist')
   },
   optimization:{
     splitChunks:{
