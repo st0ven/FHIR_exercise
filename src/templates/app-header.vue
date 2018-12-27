@@ -1,9 +1,9 @@
 <template>
-  <header class="app-header section-wrapper">
+  <section class="app-header">
     <div class="section-inner-wrapper">
       <h1>FHIR medical records search tool</h1>
     </div>
-  </header>
+  </section>
 </template>
 
 <script>

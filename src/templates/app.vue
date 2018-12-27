@@ -1,41 +1,59 @@
 <template>
-  <main class="content-wrapper">
-    <AppHeader/>
-    <SearchPatients 
-      @submit="searchForPatients"/>
-    <section>
-      <ul>
-        <li
-          v-for="(item, index) of getPatientListData()"
-          v-bind:key="`patient-${index}`"
-          v-bind="item"
-          v-bind:index="index">
-            {{ `${item.name[0].family.join(' ')}, ${item.name[0].given.join(' ')}`}}
-        </li>
-      </ul>
-    </section>
-  </main>
+  <div class="content-wrapper">
+    <header v-bind:class="getHeaderClassName">
+      <AppHeader/>
+      <SearchPatients 
+        v-bind:collapsed="hasPatientResults()"
+        @submit="searchForPatients"/>
+    </header>
+    <PatientResults
+      v-if="hasPatientResults()"
+      v-bind:patientData="getPatientListData"/>
+  </div>
 </template>
 
 <script>
   import AppHeader from './app-header';
+  import DataTable from './data-table';
+  import PatientResults from './patient-results';
   import SearchPatients from './search-patients';
-  import { searchPatients } from '../service';
+  import femaleIcon from '../images/female.svg';
+  import maleIcon from '../images/male.svg';
+  import { 
+    getHealthRecordsOfPatient, 
+    searchPatients 
+  } from '../service';
+
   export default {
     name: 'App',
     components: {
       AppHeader,
+      DataTable,
+      PatientResults,
       SearchPatients
     },
     methods: {
-      getMorePatientsEndpoint(){
-        return ( this.patientResults.link || [] )
-          .filter( item => item.relation === 'next')
-          .map( (item = {}) => item.url );
+      fetchPatientRecords( { resourceId } ){
+        this.recordsPending = true;
+        getHealthRecordsOfPatient( resourceId )
+          .then( result => {
+            this.patientRecordsResults = result;
+            this.recordsPending = false;
+          });
       },
-      getPatientListData(){
-        return ( this.patientResults.entry || [] )
-          .map( (item = {}) => item.resource );
+      hasPatientResults(){
+        return this.patientResults.entry 
+          && this.patientResults.entry.length > 0;
+      },
+      reducePatientNameFromResponse( nameObject = [] ){
+        const patientName = nameObject[0] || {};
+        const lastName = ( patientName.family instanceof Array )
+          ? patientName.family.join( ' ' )
+          : patientName.family;
+        const givenName = ( patientName.given instanceof Array )
+          ? patientName.given.join( ' ' )
+          : patientName.given;
+        return `${lastName.toUpperCase()}, ${givenName.toUpperCase()}`;
       },
       searchForPatients(queryString){
         if(queryString.length){
@@ -48,7 +66,6 @@
             .then( result => {
                 /* TODO: error handling */
                 this.patientResults = result;
-                // emit event indicating results have been received
                 this.resultsPending = false;
               });
         }
@@ -57,9 +74,66 @@
     data(){
       return{
         currentPatientResultsList: [],
+        displayPatientResults: false,
         patientResults: {},
+        patientRecordsResults: {},
         patientHistoryResults: [],
-        resultsPending: false
+        recordsPending: false,
+        resultsPending: false,
+      }
+    },
+    computed: {
+      getHeaderClassName(){
+        return `sticky__top${ this.hasPatientResults ? ' sticky__full' : '' }`;
+      },
+      getMorePatientsEndpoint(){
+        return ( this.patientResults.link || [] )
+          .filter( item => item.relation === 'next')
+          .map( (item = {}) => item.url );
+      },
+      getPatientListData(){
+        // init app data to fresh values
+        const currentList = this.currentPatientResultsList;
+        const latestResults = !( this.patientResults.entry instanceof Array )
+          ? []
+          : this.patientResults.entry;
+        // map the list results into a format to be displayed
+        try {
+          return currentList.concat(
+            latestResults.map( 
+              (item = {}) => ({
+                birthDate: (
+                  new Date().getFullYear() - item.resource.birthDate.split('-')[0]
+                ),
+                gender: item.resource.gender,
+                resourceId: item.resource.id,
+                name: this.reducePatientNameFromResponse( item.resource.name ),
+              })
+            )
+          );
+        }
+        catch( error ){
+          console.log( error );
+        }
+      },
+      getPatientRecordsData(){
+        const latestResults = this.patientRecordsResults.entry instanceof Array
+          ? this.patientRecordsResults.entry
+          : [];
+        try {
+          return latestResults
+            .filter( ( item = {} ) => item.resource.clinicalStatus === "active" )
+            .map(
+              ( item = {} ) => ({
+                resourceId: item.resource.id,
+                onset: item.resource.onsetDateTime,
+                condition: item.resource.code.text
+              })
+            )
+        }
+        catch( error ){
+          console.log( error );
+        }
       }
     }
   }
@@ -75,18 +149,30 @@
     font-size: inherit;
     font-family: 'Source Sans Pro', sans-serif;
   }
-  html, body{
+  html, body {
     position: relative;
     min-width: 100%;
     min-height: 100%;
     display: flex;
   }
-  .content-wrapper{
+  .sticky__top {
+    position: sticky;
+    top: 0px;
     display: flex;
     flex-direction: column;
+    flex-grow: 0;
+    transition: flex .5s ease;
+  }
+  .sticky__full {
     flex-grow: 1;
   }
-  .section-inner-wrapper{
+  .content-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex-grow: 0;
+  }
+  .section-inner-wrapper {
     width: 100%;
     max-width: 800px;
   }

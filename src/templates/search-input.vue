@@ -91,8 +91,8 @@
     transition-property: background, border-color;
   }
   .search-input:focus{
-    background: rgb(10,0,191);
-    border-color: rgb(10, 0, 191);
+    background: rgb(39,63,107);
+    border-color: rgb(39,63,107);
     color: white;
     font-weight: 600;
   }
