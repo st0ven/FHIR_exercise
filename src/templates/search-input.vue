@@ -1,12 +1,12 @@
 <template>
   <aside class="input-coupling">
-    <label 
-      v-if='label' 
+    <label
+      v-if='label'
       class="input-label">
         {{ label }}
     </label>
-    <input 
-      type="text" 
+    <input
+      type="text"
       v-on:keyup.enter="handleSubmit"
       v-bind:placeholder="placeholder"
       v-bind:class="getClassName"/>
@@ -25,7 +25,7 @@
     ],
     methods: {
       handleSubmit(e){
-        if( 
+        if(
           e.target.value.length
           && e.target.value !== this.currentValue
         ) {
@@ -69,31 +69,35 @@
     font-weight: 400;
   }
   input{
-    font-size: 14pt;
+    font-size: 16pt;
   }
   .input-coupling{
     display: flex;
     flex-direction: column;
   }
   .input-label{
-    font-size: 12pt;
-    padding-bottom: .5rem;
+    font-size: 14pt;
+    padding-bottom: .75rem;
   }
   .search-input{
+    color: white;
     font-weight: 400;
     padding: .8rem 1.2rem;
+    background: transparent;
     border-radius: .2rem;
-    border: 1px solid rgba(0,0,0,.5);
-    background: rgba(0,20,10,.0);
+    border: 1px solid rgba(255,255,255,.5);
     min-width: 320px;
-    transition-duration: .25s;
+    box-sizing: border-box;
+    transition-duration: .2s;
     transition-timing-function: ease;
     transition-property: background, border-color;
   }
-  .search-input:focus{
-    background: rgb(39,63,107);
-    border-color: rgb(39,63,107);
+  .search-input::-webkit-input-placeholder{
     color: white;
+  }
+  .search-input:focus{
+    background: rgb(80,80,80);
+    border-color: rgb(80,80,80);
     font-weight: 600;
   }
 </style>

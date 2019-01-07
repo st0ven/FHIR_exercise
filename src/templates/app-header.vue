@@ -19,12 +19,9 @@
     justify-content: center;
     padding: .25rem 4rem;
     box-sizing: border-box;
+    display: none;
   }
   .app-header h1{
-    font-family: 'Source Sans Pro';
-    font-weight: 400;
-    font-size: 10pt;
-    outline: 0;
-    text-transform: uppercase;
+    font-size: 12pt;
   }
 </style>
