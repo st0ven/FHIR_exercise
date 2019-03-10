@@ -1,30 +1,64 @@
 <template>
-  <header class="app-header section-wrapper">
-    <div class="section-inner-wrapper">
-      <h1>FHIR medical records search tool</h1>
-    </div>
-  </header>
+  <section class="app-header">
+    <h1 class="page-title">Patient Records Finder</h1>
+    <search-input
+      class="search"
+      placeholder="e.g.: john smith"
+      v-bind:value="queryString"
+      @submit="submitHandler" />
+  </section>
 </template>
 
 <script>
+  import SearchInput from './search-input';
   export default {
-    name: 'AppHeader'
+    name: 'AppHeader',
+    components: {
+      SearchInput
+    },
+    props: [
+      'queryString'
+    ],
+    methods: {
+      submitHandler(e){
+        this.$emit(
+          'submit',
+          e
+        );
+      }
+    }
   }
 </script>
 
 <style>
-  .app-header{
-    background: white;
-    display: flex;
-    justify-content: center;
-    padding: .25rem 4rem;
-    box-sizing: border-box;
+  @keyframes slideIn {
+    from {
+      transform: translateY(-20%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
   }
-  .app-header h1{
-    font-family: 'Source Sans Pro';
-    font-weight: 400;
-    font-size: 10pt;
-    outline: 0;
-    text-transform: uppercase;
+  .app-header{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    margin: 1rem 0 4rem;
+    animation-name: slideIn;
+    animation-duration: .3s;
+    animation-timing-function: ease;
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+  }
+  .page-title {
+    margin-bottom: 0;
+  }
+  .search {
+    width: 420px;
   }
 </style>

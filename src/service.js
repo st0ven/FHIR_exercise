@@ -23,7 +23,9 @@ async function asyncGet(a, b = {}) {
       }
     }
   ).catch(
-    error => error
+    error => ({
+      error
+    })
   )
 }
 
@@ -50,8 +52,7 @@ function stringifyObjectAsUrlArgs( objectToConvert = {} ) {
 
 /* API Functions for the app */
 /*****************************/
-
-export function searchPatients(byName) {
+export function searchForPatients(byName) {
   return asyncGet(
     'Patient',
     { 
@@ -60,7 +61,6 @@ export function searchPatients(byName) {
     }
   );
 }
-
 export function getHealthRecordsOfPatient(patientId) {
   return asyncGet(
     'Condition',
