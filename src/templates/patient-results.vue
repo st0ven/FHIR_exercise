@@ -1,30 +1,48 @@
  <template>
   <section class="patient-results">
-    <div class="section-inner-wrapper">
-      <h3 class="results-title">Patient Search Results</h3>
-      <p class="description">
-        Select a patient from the list of results in order to view that patient's medical records history.
-      </p>
-      <data-table
-        v-bind:tableData="patientData"
-        v-bind:schema="getPatientListSchema"
-        v-bind:selectable="true"
-        @deselect="handleDeselect"
-        @select="handleSelect"/>
+    <results-heading title="Patient Search Results"/>
+    <data-table
+      v-if="hasResults"
+      v-bind:tableData="patientData"
+      v-bind:schema="getPatientListSchema"
+      v-bind:selectable="true"
+      v-bind:resultsLinks="resultsLinks"
+      @deselect="handleDeselect"
+      @select="handleSelect"/>
+    <div
+      class="loading-results"
+      v-if="resultsPending">
+        <h4>fetching results</h4>
+        <Loader/>
     </div>
+    <notification
+      v-if="!resultsPending && !hasResults"
+      title="no patient results found"
+      description="There were no patients on record that matched your search query. Please refine your search and submit to process another query. Searches are queried against a patient's full name. Regular expression matches are not currently supported."/>
   </section>
 </template>
 
 <script>
   import DataTable from './data-table';
+  import Loader from './loader';
+  import Notification from './notification';
+  import ResultsHeading from './results-heading';
   export default {
     name: 'PatientResults',
     components: {
-      DataTable
+      DataTable,
+      Loader,
+      Notification,
+      ResultsHeading
     },
     props: [
       'patientData',
+      'resultsLinks',
+      'resultsPending'
     ],
+    updated: function(){
+      console.log(this.resultsPending, this.hasResults);
+    },
     methods: {
       handleDeselect( row, index, e ){
         this.$emit(
@@ -44,10 +62,15 @@
     computed: {
       getPatientListSchema(){
         return [
-          'name',
+          'last name',
+          'first name',
+          'middle name',
           'gender',
           'age'
         ]
+      },
+      hasResults(){
+        return Boolean( this.patientData.length );
       },
     },
   };
@@ -57,29 +80,9 @@
   .patient-results {
     display: flex;
     flex-direction: column;
-    align-items: center;
     flex-grow: 1;
-    padding: 3rem 4rem 8rem;
     box-sizing: border-box;
-  }
-  .patient-results .results-title {
-    font-family: 'Source Sans Pro';
-    font-size: 16pt;
-    margin-bottom: 2rem;
-  }
-  .patient-results .description {
-    margin-bottom: 2rem;
-    font-weight: 300;
-    font-size: 11pt;
-    line-height: 1.8;
-    display: none;
-  }
-  .sticky__bottom {
-    position: fixed;
-    bottom: 0;
-  }
-  .justify-end {
-    display: flex;
-    justify-content: flex-end;
+    position: relative;
+    max-width: 100%;
   }
 </style>

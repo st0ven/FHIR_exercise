@@ -1,15 +1,11 @@
 <template>
-  <section v-bind:class="getClassName">
-    <div v-bind:class="getInnerClassName">
+  <section class="search-parameters">
+    <div class="section-inner-content">
       <div class="max-width__480">
+        <h2 class="page-title input-title">Patient Records Finder</h2>
         <search-input
-          v-if="collapsed"
-          v-bind:hideLabel="true"
-          placeholder="e.g.: john smith"
-          @submit="submitHandler"/>
-        <search-input
-          v-else
-          label="Search for patients by name"
+          size="large"
+          autofocus="true"
           placeholder="e.g.: john smith"
           @submit="submitHandler"/>
         <aside
@@ -37,15 +33,7 @@
         this.$emit(
           'submit',
           e
-        )
-      }
-    },
-    computed: {
-      getClassName(){
-        return `search-parameters${this.collapsed ? ' search-parameters__collapsed' : ''}`;
-      },
-      getInnerClassName(){
-        return `section-inner-wrapper${this.collapsed ? ' justify-center' : ' justify-center'}`
+        );
       }
     }
   }
@@ -54,21 +42,15 @@
 <style>
   .search-parameters{
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 3rem 4rem;
-    background: radial-gradient(
-      circle farthest-corner at top left,
-      rgb(50,55,60),
-      rgb(35,40,45)
-    );
     box-sizing: border-box;
     transition-property: padding;
     transition-timing-function: ease;
     transition-duration: .4s;
     flex-grow: 1;
-    color: white;
+    height: 100%;
   }
   .search-parameters__collapsed{
     padding: 2rem 4rem;
@@ -83,15 +65,16 @@
     flex-grow: 1;
     max-width: 480px;
   }
+  .input-title{
+    margin-bottom: 1rem;
+  }
   .search-description{
-    margin-top: 1rem;
-    font-size: 12pt;
-    font-weight: 300;
-    line-height: 1.8;
-    padding: 1.5rem 2rem;
+    margin-top: 2rem;
+    font-size: 14pt;
+    font-weight: 200;
+    line-height: 1.6;
     box-sizing: border-box;
-    background: #ddd;
-    color: #333;
-    border-radius: .25rem;
+    padding-left: 1.25rem;
+    border-left: 5px solid #F5FDE3;
   }
 </style>

@@ -35,9 +35,14 @@
 </template>
 
 <script>
+  import Button from './button';
   export default {
     name: "DataTable",
+    components: {
+      Button
+    },
     props: [
+      "resultsLinks",
       "schema",
       "selectable",
       "tableData"
@@ -80,6 +85,22 @@
       },
       sort(){}
     },
+    /*updated: function(){
+      if( this.resultsLinks.length > 1 ){
+        // define headers expected by the endpoint from provided source
+        const headers = {
+          headers: {
+            Accept: 'application/json+fhir'
+          }
+        };
+        fetch(
+          this.resultsLinks[1].url,
+          headers
+        ).then(
+          response => console.log(response.json())
+        );
+      }
+    },*/
     computed: {
       tableSchema(){
         return (
@@ -102,27 +123,34 @@
   .data-table{
     display: flex;
     flex-direction: column;
-    font-size: 12pt;
+    font-size: 16px;
     flex-grow: 1;
     width: 100%;
   }
-  .table-head,
+  .table-head {
+    text-transform: capitalize;
+    font-weight: 600;
+    font-size: 16px;
+    font-family: 'Archivo';
+  }
   .table-body {
     flex-grow: 1;
-  }
-  .table-head {
-    border-bottom: 1px solid rgba(0,0,0,.1);
+    font-weight: 300;
   }
   .table-row{
     display: flex;
     flex-direction: row;
     align-items: center;
     padding: 1rem 1rem;
-    font-weight: 400;
-    color: #888;
-    border-bottom: 1px solid rgba(0,0,0,.05);
     box-sizing: border-box;
     border-radius: .2rem;
+    background: rgba(245,253,227,.1);
+    margin-bottom: .5rem;
+    transition: transform .2s ease;
+  }
+  .table-head .table-row{
+    background: transparent;
+    padding-bottom: 0;
   }
   .table-row:last-of-type {
     border: none;
@@ -131,28 +159,25 @@
     cursor: pointer;
   }
   .table-body .table-row__selectable:hover:not(.table-row__selected){
-    background: rgba(0,0,0,.05);
-    color: black;
-    border-bottom: 1px solid rgba(0,0,0,0);
+    background: rgba(245,253,227,.2);
+    transform: scale(1.01);
   }
   .table-row__selected{
-    background: #0B80D6;
-    color: white;
+    background: rgb(87,93,70);
+    background: rgb(0,114,123);
+    transform: scale(1.02);
   }
   .column,
   .column-title {
     flex-grow: 1;
     width: 100%;
-  }
-  .column-title {
-    font-size: 11pt;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: black;
+    padding: 0 1.5rem;
+    overflow: hidden;
   }
   .column__selectable {
     width: 5rem;
     margin-right: 2rem;
     cursor: inherit;
+    display: none;
   }
 </style>

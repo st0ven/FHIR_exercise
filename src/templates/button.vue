@@ -1,5 +1,6 @@
 <template>
   <button
+    tabIndex="1"
     v-on:click="clickHandler"
     v-bind:class="getClassName">
       {{ this.label }}
@@ -13,6 +14,7 @@
       'disabled',
       'flavor',
       'label',
+      'type',
       'waiting'
     ],
     methods: {
@@ -27,27 +29,55 @@
     },
     computed: {
       getClassName(){
-        return `button${this.disabled ? ' button__disabled' : ''}${ this.flavor ? ` button__${this.flavor}` : '' }`;
+        const baseClass = 'button';
+        const disabledModifier = this.disabled
+          ? 'button__disabled'
+          : '';
+        const flavorModifier = this.flavor
+          ? `button__${this.flavor}`
+          : '';
+        const typeModifier = this.type
+          ? `button__${this.type}`
+          : '';
+        return [
+          baseClass,
+          disabledModifier,
+          flavorModifier,
+          typeModifier
+        ].join(' ');
       }
     }
   }
 </script>
 
 <style>
+  @keyframes buttonIntro {
+    from {
+      transform: scale(.8);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
   .button{
-    padding: .66rem 1.5rem;
-    text-transform: uppercase;
-    font-size: 9pt;
-    font-weight: 600;
-    font-family: 'Montserrat';
+    padding: 1rem 1.5rem;
+    text-transform: capitalize;
+    font-size: 14pt;
+    font-weight: 500;
+    font-family: 'Rubik';
     color: white;
     background: black;
     border-radius: .2rem;
     letter-spacing: .05rem;
-    box-shadow: 0 5px 10px rgba(0,0,0,.1);
     cursor: pointer;
     transition: transform .5s ease, box-shadow .5s ease;
     transform: translateZ(-1px);
+    animation-name: buttonIntro;
+    animation-duration: .3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
   }
   .button:active{
     box-shadow: none;
@@ -69,5 +99,11 @@
     border-bottom: 0px solid black;
     box-shadow: none;
     font-weight: 600;
+  }
+  .button__positive {
+    background: rgb(211,146,0);
+  }
+  .button__negative {
+    background: rgb(190,0,103);
   }
 </style>
