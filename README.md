@@ -5,12 +5,20 @@ The purpose of this application is to author a simple application capable of hoo
 
 Initially proposed as a code challenge which has been expanded upon to showcase a complete user experience.
 
+
+-----
+
+
 ### Installation
 - clone the repo
 - open terminal and navigate to local root directory of the cloned repository
 - `$ npm install`
 - `$ npm run local`
 - open browser of choice and navigate to `localhost.4000`
+
+
+-----
+
 
 ### Roadmap
 
