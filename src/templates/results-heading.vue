@@ -1,6 +1,6 @@
 <template>
   <header>
-    <h3 class="results-title">{{ title }}</h3>
+    <h4 class="results-title">{{ title }}</h4>
   </header>
 </template>
 

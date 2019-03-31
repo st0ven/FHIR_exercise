@@ -66,7 +66,7 @@
     max-width: 480px;
   }
   .input-title{
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
   }
   .search-description{
     margin-top: 2rem;

@@ -1,15 +1,13 @@
 <template>
-  <aside class="progress-wrapper">
-    <ul class="progress-list">
-      <li
-        class="progress-list-item"
-        v-for="(icon, index) in icons">
-          <img
-            v-bind:src="icon"
-            v-bind:class="getIconClassName(index)"/>
-      </li>
-    </ul>
-  </aside>
+  <ul class="progress-list">
+    <li
+      class="progress-list-item"
+      v-for="(icon, index) in icons">
+        <img
+          v-bind:src="icon"
+          v-bind:class="getIconClassName(index)"/>
+    </li>
+  </ul>
 </template>
 
 <script>
@@ -39,19 +37,10 @@
 </script>
 
 <style>
-  .progress-wrapper{
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-  }
   .progress-list{
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    height: 100%;
-    padding: 0 1rem;
   }
   .progress-list-item{
     display: inline;
@@ -59,15 +48,22 @@
     padding: 0;
     line-height: 0;
   }
+  .progress-list-item:first-of-type {
+    margin-top: 0;
+  }
+  .progress-list-item:last-of-type {
+    margin-bottom: 0;
+  }
   .progress-icon{
     margin: 0;
     padding: 0;
     opacity: .2;
     transition-property: opacity, transform;
     transition-timing-function: ease;
-    transition-duraation: .25s;
+    transition-duration: .25s;
   }
   .progress-icon__active{
     opacity: 1;
+
   }
 </style>

@@ -4,11 +4,13 @@
         <div class="table-row">
           <span
             class="column column__selectable"
-            v-if="selectable"/>
+            v-if="selectable"
+          />
           <span
             class="column-title"
-            v-for="key in tableSchema">
-            {{ key }}
+            v-for="item in tableSchema"
+          >
+            {{ item.title || item.key }}
           </span>
         </div>
       </header>
@@ -16,35 +18,55 @@
         <div
           v-bind:class="getRowClassName( index )"
           v-for="( row, index ) in tableData"
-          v-on:click="selectRow( row, index )">
-            <input
-              class="column column__selectable"
-              type="checkbox"
-              name="patients"
-              value="index"
-              v-bind:checked="isRowChecked( index )"
-              v-if="selectable" />
-            <span
-              class="column"
-              v-for="key in tableSchema">
-                {{ row[key] }}
+          v-on:click="selectRow( row, index )"
+        >
+          <input
+            class="column column__selectable"
+            type="checkbox"
+            name="patients"
+            value="index"
+            v-bind:checked="isRowChecked( index )"
+            v-if="selectable" 
+          />
+          <aside
+            class="column"
+            v-for="item in tableSchema"
+          >
+            <a 
+              class="data-link"
+              v-if="( item.type === 'link' )"
+              v-bind:href="(row[item.key].link)"
+              target="tab"
+            >
+              {{ row[item.key].value }}
+            </a>
+            <span v-else>
+              {{ row[item.key] }}
             </span>
+          </aside>
         </div>
+        <PendingResults 
+          v-if="resultsPending"
+          @isVisible="handleIsVisible"
+        />
       </main>
   </section>
 </template>
 
 <script>
   import Button from './button';
+  import PendingResults from './pending-results';
   export default {
     name: "DataTable",
     components: {
-      Button
+      Button,
+      PendingResults
     },
     props: [
-      "resultsLinks",
+      "rowSelected",
       "schema",
       "selectable",
+      "resultsPending",
       "tableData"
     ],
     methods: {
@@ -55,7 +77,17 @@
           );
       },
       getRowClassName( index ){
-        return `table-row${this.selectable ? ' table-row__selectable' : ''}${this.isRowChecked( index ) ? ' table-row__selected' : ''}`;
+        return `table-row${this.selectable 
+          ? ' table-row__selectable' 
+          : ''}${this.isRowChecked( index ) 
+            ? ' table-row__selected' 
+            : ''}`;
+      },
+      handleIsVisible( e ){
+        this.$emit(
+          'fetchAdditionalResults',
+          e
+        )
       },
       isRowChecked( index ){
         return index === this.selected;
@@ -82,25 +114,8 @@
             this.selected = index;
           }
         }
-      },
-      sort(){}
-    },
-    /*updated: function(){
-      if( this.resultsLinks.length > 1 ){
-        // define headers expected by the endpoint from provided source
-        const headers = {
-          headers: {
-            Accept: 'application/json+fhir'
-          }
-        };
-        fetch(
-          this.resultsLinks[1].url,
-          headers
-        ).then(
-          response => console.log(response.json())
-        );
       }
-    },*/
+    },
     computed: {
       tableSchema(){
         return (
@@ -113,7 +128,9 @@
     },
     data(){
       return {
-        selected: -1
+        selected: this.rowSelected >= 0
+          ? this.rowSelected
+          : -1
       };
     }
   }
@@ -126,6 +143,7 @@
     font-size: 16px;
     flex-grow: 1;
     width: 100%;
+    overflow: hidden;
   }
   .table-head {
     text-transform: capitalize;
@@ -136,36 +154,38 @@
   .table-body {
     flex-grow: 1;
     font-weight: 300;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
   .table-row{
     display: flex;
     flex-direction: row;
-    align-items: center;
-    padding: 1rem 1rem;
-    box-sizing: border-box;
+    align-items: flex-start;
+    line-height: 1.6;
+    padding: 1.25rem 1.25rem;
     border-radius: .2rem;
-    background: rgba(245,253,227,.1);
+    background: rgba(252,255,216,.1);
     margin-bottom: .5rem;
-    transition: transform .2s ease;
+    transition: all .2s ease;
   }
   .table-head .table-row{
     background: transparent;
-    padding-bottom: 0;
-  }
-  .table-row:last-of-type {
-    border: none;
+    border-color: rgba(252,255,216,.5);
+    border-width: 0px;
+    border-width: 0;
+    border-bottom-width: 1px;
+    border-style: solid;
   }
   .table-row__selectable{
     cursor: pointer;
   }
   .table-body .table-row__selectable:hover:not(.table-row__selected){
-    background: rgba(245,253,227,.2);
-    transform: scale(1.01);
+    background-color: rgba(252,255,216,.25);
+    transition: none;
   }
   .table-row__selected{
-    background: rgb(87,93,70);
     background: rgb(0,114,123);
-    transform: scale(1.02);
+    transition: none;
   }
   .column,
   .column-title {
@@ -174,10 +194,31 @@
     padding: 0 1.5rem;
     overflow: hidden;
   }
+  .column-title {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  .column-title:after {
+    content: '';
+    width: 0;
+    height: 0;
+    display: block;
+    justify-self: flex-end;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid rgb(252,255,216);
+    display: none;
+  }
   .column__selectable {
     width: 5rem;
     margin-right: 2rem;
     cursor: inherit;
     display: none;
+  }
+  .data-link {
+    text-transform: lowercase;
   }
 </style>
