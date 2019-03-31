@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 /* Given a name as a string, will return a capitalized version of the name */
 function capitalizeName( nameString ) {
   return nameString
@@ -44,10 +46,10 @@ export function populatePatientListTableData( item = {} ) {
     ),
     gender: item.resource.gender,
     resourceId: item.resource.id,
-    'last name': capitalizeName(
+    family: capitalizeName(
       extractLastName( item.resource.name )
     ),
-    'first name': capitalizeName(
+    given: capitalizeName(
       extractFirstName( item.resource.name ).toLowerCase()
     ),
     'middle name': capitalizeName(
@@ -60,8 +62,11 @@ returns a set of table-supported schema to represent a patient record in the lis
 export function populatePatientRecordsTableData( item = {} ){
   return {
     resourceId: item.resource.id,
-    onset: item.resource.onsetDateTime || 'unknown',
-    condition: item.resource.code.text,
+    onset: moment(item.resource.onsetDateTime).format('LLL') || 'unknown',
+    condition: {
+      link: `https://www.ncbi.nlm.nih.gov/pubmed/?term=${item.resource.code.text}`,
+      value: item.resource.code.text
+    },
     notes: item.resource.notes || ''
   }
 }

@@ -1,11 +1,12 @@
 <template>
   <section class="app-header">
-    <h1 class="page-title">Patient Records Finder</h1>
+    <h2 class="page-title">Patient Records Finder</h2>
     <search-input
       class="search"
       placeholder="e.g.: john smith"
       v-bind:value="queryString"
-      @submit="submitHandler" />
+      @submit="submitHandler" 
+    />
   </section>
 </template>
 
@@ -48,7 +49,6 @@
     justify-content: center;
     justify-content: space-between;
     box-sizing: border-box;
-    margin: 1rem 0 4rem;
     animation-name: slideIn;
     animation-duration: .3s;
     animation-timing-function: ease;

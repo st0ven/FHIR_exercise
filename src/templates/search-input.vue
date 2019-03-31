@@ -74,11 +74,11 @@
   }
   :focus::-webkit-input-placeholder{
     color: inherit;
-    color: rgb(201,255,245);
+    color: rgba(252,255,216,.5);
     font-weight: 400;
   }
   input{
-    font-size: 14pt;
+    font-size: 18px;
   }
   .search-input{
     display: flex;
@@ -102,7 +102,7 @@
     padding: .8rem 1.2rem;
     background: transparent;
     border-radius: .2rem;
-    border: 1px solid rgba(245,253,227,1);
+    border: 1px solid rgba(252,255,216,1);
     min-width: 320px;
     box-sizing: border-box;
     transition-duration: .2s;
@@ -118,15 +118,13 @@
     opacity: .5;
   }
   .search-input input:focus{
-    background: rgb(0,59,67);
     background: rgb(0,114,123);
-    border-color: rgb(201,255,245);
     border-color: rgb(0,114,123);
-    color: rgb(201,255,245);
+    color: rgb(252,255,216);
   }
   .search-input__large input{
     height: 64px;
-    font-size: 18pt;
+    font-size: 20px;
   }
   .search-icon {
     position: absolute;

@@ -3,7 +3,11 @@
     tabIndex="1"
     v-on:click="clickHandler"
     v-bind:class="getClassName">
-      {{ this.label }}
+      <div class="button__bg"/>
+      <div class="button__fill"/>
+      <label class="button__label">
+        {{ this.label }}
+      </label>
   </button>
 </template>
 
@@ -31,13 +35,13 @@
       getClassName(){
         const baseClass = 'button';
         const disabledModifier = this.disabled
-          ? 'button__disabled'
+          ? 'button--disabled'
           : '';
         const flavorModifier = this.flavor
-          ? `button__${this.flavor}`
+          ? `button--${this.flavor}`
           : '';
         const typeModifier = this.type
-          ? `button__${this.type}`
+          ? `button--${this.type}`
           : '';
         return [
           baseClass,
@@ -62,15 +66,16 @@
     }
   }
   .button{
+    position: relative;
     padding: 1rem 1.5rem;
     text-transform: capitalize;
     font-size: 14pt;
     font-weight: 500;
     font-family: 'Rubik';
     color: white;
-    background: black;
-    border-radius: .2rem;
-    letter-spacing: .05rem;
+    background: transparent;
+    border-radius: .25rem;
+    letter-spacing: .1rem;
     cursor: pointer;
     transition: transform .5s ease, box-shadow .5s ease;
     transform: translateZ(-1px);
@@ -78,32 +83,77 @@
     animation-duration: .3s;
     animation-iteration-count: 1;
     animation-fill-mode: both;
+    z-index: 1;
   }
-  .button:active{
+  .button__bg,
+  .button__fill{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: 1;
+    border-radius: inherit;
+    z-index: -1;
+    transition-property: all;
+    transition-timing-function: ease;
+    transition-duration: .4s;
+  }
+  .button__bg {
+    top: .33rem;
+    mix-blend-mode: screen;
+    opacity: .25;
+  }
+  .button__label{
+    transition-property: all;
+    transition-timing-function: ease;
+    transition-duration: .4s;
+    display: inline-block;
+    position: relative;
+    cursor: inherit;
+  }
+
+  .button:hover .button__bg,
+  .button:hover .button__fill {
+    transform: scale3d(1.05,1.1,1);
+  }
+  .button:hover .button__bg {
+    filter: blur(1rem);
+    mix-blend-mode: screen;
+  }
+  .button:active .button__bg,
+  .button:active .button__fill {
+    transform: scale3d( .9, .8, 1 );
+    transition-duration: .2s;
+  }
+
+  .button--nude{
+    color: black;
+    border-bottom: 0px solid black;
     box-shadow: none;
-    transform: scale(.97);
-    transition: none;
-    box-shadow: 0 1px 2px rgba(0,0,0,.5);
+    font-weight: 600;
   }
-  .button__disabled{
-    background: #e2e2e2;
+  .button--nude .button__fill{
+    background: transparent;
+  }
+  .button--disabled{
     color: #aaa;
     text-decoration: line-through;
     font-weight: 400;
     box-shadow: none;
     cursor: not-allowed;
   }
-  .button__nude{
-    background: transparent;
-    color: black;
-    border-bottom: 0px solid black;
-    box-shadow: none;
-    font-weight: 600;
+  .button--disabled .button__bg,
+  .button--disabled .button__fill{
+    background: #e2e2e2;
   }
-  .button__positive {
+  .button--positive .button__bg,
+  .button--positive .button__fill {
     background: rgb(211,146,0);
   }
-  .button__negative {
+  .button--negative .button__bg,
+  .button--negative .button__fill {
     background: rgb(190,0,103);
   }
 </style>
