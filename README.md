@@ -11,3 +11,13 @@ Initially proposed as a code challenge which has been expanded upon to showcase 
 - `$ npm install`
 - `$ npm run local`
 - open browser of choice and navigate to `localhost.4000`
+
+### Roadmap
+
+##### Phase 1
+- Allow for simple name-based search of a patient, matching any results to any partial match of a patient's full name
+- Support desktop utilizing CSS grid for responsive flow of layout
+
+##### Phase 2
+- Support more advanced search capabilities including matches against first or last name only, gender, age range and other inherent characteristics supported by the API
+- Support mobile-specific layouts & design
